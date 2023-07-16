@@ -1,26 +1,48 @@
+#name: Build + tests
+#
+#on:
+#  pull_request:
+#    branches: [ "master" ]
+#  push:
+#    branches: [ "master", "one27" ]
+#  workflow_dispatch:
+#      inputs:
+#        TEST_ENDPOINT:
+#          description: "Endpoint for tests"
+#          required: true
+#          default: https://klassika-apteka.ru
+#        TEST_BROWSER:
+#          description: "Browser for tests"
+#          required: true
+#          default: chrome
+#        ALLURE_JOB_RUN_ID:
+#          description: "ALLURE_JOB_RUN_ID service parameter. Leave blank."
+#          required: false
+#        ALLURE_USERNAME:
+#          description: "ALLURE_USERNAME service parameter. Leave blank"
+#          required: false
 name: Build + tests
 
 on:
   pull_request:
     branches: [ "master" ]
   push:
-    branches: [ "master", "oneshop" ]
-  workflow_dispatch:
-    inputs:
-      TEST_ENDPOINT:
-        description: "Endpoint for tests"
-        required: true
-#        default: https://aptekaeconom.com/
-      TEST_BROWSER:
-        description: "Browser for tests"
-        required: true
-        default: chrome
-      ALLURE_JOB_RUN_ID:
-        description: "ALLURE_JOB_RUN_ID service parameter. Leave blank."
-        required: false
-      ALLURE_USERNAME:
-        description: "ALLURE_USERNAME service parameter. Leave blank"
-        required: false
+    workflow_dispatch:
+      inputs:
+        TEST_ENDPOINT:
+          description: "Endpoint for tests"
+          required: true
+          default: https://klassika-apteka.ru
+        TEST_BROWSER:
+          description: "Browser for tests"
+          required: true
+          default: chrome
+        ALLURE_JOB_RUN_ID:
+          description: "ALLURE_JOB_RUN_ID service parameter. Leave blank."
+          required: false
+        ALLURE_USERNAME:
+          description: "ALLURE_USERNAME service parameter. Leave blank"
+          required: false
 
 env:
   IS_REMOTE: true
