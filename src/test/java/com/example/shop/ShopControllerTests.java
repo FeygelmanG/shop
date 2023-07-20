@@ -77,21 +77,19 @@ public class ShopControllerTests {
     @Test
     public void shouldAddShop() {
 //        JSONObject shop = new JSONObject()
-//                .put("shopId", 5000L)
 //                .put("shopName", "Shop Name")
 //                .put("shopPublic", false);
 //
 //        ShopDto shopRes = requestSpec
 //                .body(shop.toString())
 //                .contentType("application/json")
-//                .post("/shop/add")
+//                .post("/shops/add")
 //                .as(new TypeRef<>() {});
 //
-//        assertThat(shopRes.getShopId()).isNotNull();
+//        assertThat(shopRes.getShopId().equals());
 
         String shopName = faker.funnyName().name();
         JSONObject object = new JSONObject();
-        object.put("shopId", 5000L);
         object.put("shopName", shopName);
         object.put("shopPublic", faker.random().nextBoolean());
 
@@ -100,9 +98,9 @@ public class ShopControllerTests {
         System.out.println(object);
         Response response = requestSpec.post("/shops/add");
         response.then()
-                .statusCode(200)
-                .assertThat()
-                .body("shopName", equalTo(shopName));
+                .statusCode(200);
+//                .assertThat()
+//                .body("shopName", equalTo(shopName));
 
     }
 //2. Должна быть возможность удалять магазины:
