@@ -4,7 +4,6 @@ import com.example.shop.models.ShopDto;
 import com.github.javafaker.Faker;
 import io.restassured.RestAssured;
 import io.restassured.builder.ResponseSpecBuilder;
-import io.restassured.common.mapper.TypeRef;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
@@ -13,7 +12,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.ClassBasedNavigableIterableAssert.assertThat;
+import static io.restassured.parsing.Parser.JSON;
 import static org.hamcrest.Matchers.equalTo;
 
 
@@ -76,7 +75,7 @@ public class ShopControllerTests {
 //    a. Один запрос = один новый магазин
     @Test
     public void shouldAddShop() {
-//        JSONObject shop = new JSONObject()
+        //        JSONObject shop = new JSONObject()
 //                .put("shopName", "Shop Name")
 //                .put("shopPublic", false);
 //
@@ -97,6 +96,7 @@ public class ShopControllerTests {
         requestSpec.header("content-type", "application/json");
         System.out.println(object);
         Response response = requestSpec.post("/shops/add");
+//        System.out.println(response.then().extract().response().as(String.class));
         response.then()
                 .statusCode(200);
 //                .assertThat()
@@ -107,21 +107,21 @@ public class ShopControllerTests {
 //    a. Один запрос = один удаленный магазин
 //    b. При попытке удалить магазин без указания айди на фронтенде
 //    появляется соответствующая ошибка, на бэкенде не должно быть
-//    @Test
-//    public void shouldDeletePet() {
-//
+    @Test
+    public void shouldDeletePet() {
+
 //        JSONObject shop = new JSONObject()
-//                .put("id", 3000L)
-//                .put("shopName", "PetShop")
-//                .put("shopPublic", "true");
-//
+//                .put("id", 8054L)
+//                .put("shopName", "Ben Down")
+//                .put("shopPublic", "false");
+
 //        ShopDto createdShop = generateShop(shop);
-//
-//        request
-//                .delete("/shop/{id}", createdShop.getShopId())
-//                .then()
-//                .statusCode(200);
-//    }
+
+        requestSpec
+                .delete("/shops/delete/{id}", 8054L)
+                .then()
+                .statusCode(204);
+    }
 //    private ShopDto generateShop(Object o) {
 //        return request
 //                .body(o.toString())
