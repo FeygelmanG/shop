@@ -51,7 +51,6 @@ public class ShopControllerTests {
         Response response = requestSpec.post("/shops/add");
         response.then()
                 .statusCode(200);
-
     }
 
     @Test
@@ -68,7 +67,6 @@ public class ShopControllerTests {
         Response response = requestSpec.post("/shops/add");
         response.then()
                 .statusCode(400);
-
     }
 
     @Test
