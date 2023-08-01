@@ -12,7 +12,7 @@ import static com.example.shop.ShopHandler.checkLength;
 public class ShopHandlerTests {
     @ParameterizedTest
     @ValueSource(strings = {"Sporttovari", "InnopolisMarket", "ArskiiMed"})
-    @DisplayName("Положительная роверка, что имя магазина может содержать любые символы, но обязано начинаться с " +
+    @DisplayName("Положительная проверка, что имя магазина может содержать любые символы, но обязано начинаться с " +
             "большой буквы")
     public void shouldFirstLetter(String nameShop) {
 

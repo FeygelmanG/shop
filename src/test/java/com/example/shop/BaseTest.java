@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
+
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Objects;
@@ -25,7 +26,8 @@ public class BaseTest {
             WebDriver driver = new RemoteWebDriver(URI.create("http://localhost:4444/wd/hub").toURL(), chromeOptions);
             setWebDriver(driver);
         } else {
-            Configuration.browser = "chrome";
+            Configuration.browserCapabilities = new ChromeOptions().addArguments("--remote-allow-origins=*");
+            Configuration.browser = "Chrome";
         }
     }
 }

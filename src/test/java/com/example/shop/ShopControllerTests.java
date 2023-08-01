@@ -21,7 +21,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class ShopControllerTests {
     private static final Faker faker = new Faker();
-    RequestSpecification requestSpec;
+    static RequestSpecification requestSpec;
     ResponseSpecification responseShopDto;
 
     @BeforeAll
@@ -122,6 +122,7 @@ public class ShopControllerTests {
     public void shouldDeleteShop() {
         String shopName = faker.funnyName().name();
 
+
         step("Создать тестовый магазин", () -> {
             JSONObject object = new JSONObject();
             object.put("shopName", shopName);
@@ -155,6 +156,5 @@ public class ShopControllerTests {
                     .then()
                     .statusCode(204);
         });
-
     }
 }
