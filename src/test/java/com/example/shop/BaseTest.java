@@ -16,8 +16,8 @@ public class BaseTest {
 
     @BeforeAll
     public static void setDriver() throws MalformedURLException {
-        String isRemote = System.getenv("IS_REMOTE");
-        if (Objects.equals(isRemote, "true")) {
+//        String isRemote = System.getenv("IS_REMOTE");
+//        if (Objects.equals(isRemote, "true")) {
             Configuration.timeout = 6000;
             Configuration.browser = "chrome";
             Configuration.browserSize = "1920x1080";
@@ -25,10 +25,10 @@ public class BaseTest {
             chromeOptions.setCapability("enableVNC:", true);
             WebDriver driver = new RemoteWebDriver(URI.create("http://localhost:4444/wd/hub").toURL(), chromeOptions);
             setWebDriver(driver);
-        } else {
-            Configuration.browserCapabilities = new ChromeOptions().addArguments("--remote-allow-origins=*");
-            Configuration.browser = "Chrome";
-        }
+//        } else {
+//            Configuration.browserCapabilities = new ChromeOptions().addArguments("--remote-allow-origins=*");
+//            Configuration.browser = "Chrome";
+//        }
     }
 }
 
