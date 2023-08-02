@@ -12,34 +12,34 @@ import static com.example.shop.ShopHandler.checkLength;
 public class ShopHandlerTests {
     @ParameterizedTest
     @ValueSource(strings = {"Sporttovari", "InnopolisMarket", "ArskiiMed"})
-    @DisplayName("Положительная проверка, что имя магазина может содержать любые символы, но обязано начинаться с " +
+    @DisplayName("UnitTests.Положительная проверка, что имя магазина может содержать любые символы, но обязано начинаться с " +
             "большой буквы")
-    public void shouldFirstLetter(String nameShop) {
+    public void shouldBigFirstLetter(String nameShop) {
 
         Assertions.assertTrue(checkFirstLetter(nameShop));
     }
 
-    @DisplayName("Негативная проверка, что имя магазина может содержать любые символы, но обязано начинаться с " +
+    @DisplayName("UnitTests.Негативная проверка, что имя магазина может содержать любые символы, но обязано начинаться с " +
             "большой буквы")
     @ParameterizedTest
     @ValueSource(strings = {"sporttovari", "innopolisMarket", "arskiiMed"})
-    public void shouldNotFirstLetter(String nameShop) {
+    public void shouldNotBigFirstLetter(String nameShop) {
 
         Assertions.assertFalse(checkFirstLetter(nameShop));
     }
 
-    @DisplayName("Позитивная проверка, что имя магазина должно быть больше 6 символов")
+    @DisplayName("UnitTests.Позитивная проверка, что имя магазина должно быть больше 6 символов")
     @ParameterizedTest
     @ValueSource(strings = {"Sporttovari", "InnopolisMarket", "ArskiiMed"})
-    public void shouldLengthShop(String nameShop) {
+    public void should6LettersShop(String nameShop) {
 
         Assertions.assertTrue(checkLength(nameShop, 7));
     }
 
-    @DisplayName("Негативная проверка, что имя магазина должно быть больше 6 символов")
+    @DisplayName("UnitTests.Негативная проверка, что имя магазина должно быть больше 6 символов")
     @ParameterizedTest
     @ValueSource(strings = {"Sport", "Inno", "Arsk"})
-    public void shouldNotLengthShop(String nameShop) {
+    public void shouldNot6LettersShop(String nameShop) {
 
         Assertions.assertFalse(checkLength(nameShop, 7));
     }

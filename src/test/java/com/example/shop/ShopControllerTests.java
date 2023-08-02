@@ -39,7 +39,7 @@ public class ShopControllerTests {
     }
 
     @Test
-    @DisplayName("Добавление тестового магазина")
+    @DisplayName("ControllerTests.Добавление тестового магазина")
     public void shouldAddShop() {
         String shopName = faker.funnyName().name();
         JSONObject object = new JSONObject();
@@ -54,7 +54,7 @@ public class ShopControllerTests {
     }
 
     @Test
-    @DisplayName("Негативная проверка добавления тестового магазина с именем > 256 символов")
+    @DisplayName("ControllerTests.Негативная проверка добавления тестового магазина с именем > 256 символов")
     public void shouldNotAddShopWithExtraLongName() {
         String shopName = "s".repeat(256) +
                 faker.funnyName().name();
@@ -70,14 +70,47 @@ public class ShopControllerTests {
     }
 
     @Test
-    @DisplayName("Получение всех магазинов")
+    @DisplayName("ControllerTests.Негативная проверка добавления тестового магазина с именем, начинающимся " +
+            "с маленькой буквы")
+    public void shouldNotBigFirstLetterNameShop() {
+        String shopName = faker.funnyName().name().toLowerCase();
+        JSONObject object = new JSONObject();
+        object.put("shopName", shopName);
+        object.put("shopPublic", faker.random().nextBoolean());
+
+        requestSpec.body(object.toString());
+        requestSpec.header("content-type", "application/json");
+        Response response = requestSpec.post("/shops/add");
+        response.then()
+                .statusCode(400)
+                .body(equalTo("Name should begin with a capital letter"));
+    }
+
+    @Test
+    @DisplayName("ControllerTests.Негативная проверка добавления тестового магазина с именем < 6 символов")
+    public void shouldNot6LettersShop() {
+        String shopName = faker.funnyName().name();
+        JSONObject object = new JSONObject();
+        object.put("shopName", shopName.substring(1,5));
+        object.put("shopPublic", faker.random().nextBoolean());
+
+        requestSpec.body(object.toString());
+        requestSpec.header("content-type", "application/json");
+        Response response = requestSpec.post("/shops/add");
+        response.then()
+                .statusCode(400)
+                .body(equalTo("Name should be more than 6 letters"));
+    }
+
+    @Test
+    @DisplayName("ControllerTests.Получение всех магазинов")
     public void shouldGetAllShop() {
         Response response = requestSpec.get("/shops/all");
         response.then().statusCode(200);
     }
 
     @Test
-    @DisplayName("Получение магазина по id")
+    @DisplayName("ControllerTests.Получение магазина по id")
     public void shouldGetShopByIdTest() {
         String shopName = faker.funnyName().name();
         Boolean shopPublic = faker.random().nextBoolean();
@@ -118,7 +151,7 @@ public class ShopControllerTests {
     }
 
     @Test
-    @DisplayName("Удаление тестового магазина")
+    @DisplayName("ControllerTests.Удаление тестового магазина")
     public void shouldDeleteShop() {
         String shopName = faker.funnyName().name();
 
