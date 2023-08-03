@@ -132,13 +132,13 @@ public class ShopControllerTests {
             Long shopId = 0L;
             var shopsList = session.createNativeQuery("SELECT * FROM shops ORDER BY shop_id DESC", ShopPojo.class).list();
             Assertions.assertTrue(shopsList.size() > 0);
-            int i = shopsList.size() - 1;
+            int i = 0;
             String shopNameSelect = "";
-            while ((i >= 0) & (!shopNameSelect.equals(shopName))) {
+            while ((i <=  shopsList.size()-1) & (!shopNameSelect.equals(shopName))) {
                 ShopPojo testShop = shopsList.get(i);
                 shopNameSelect = testShop.getShopName();
                 shopId = testShop.getShopId();
-                i--;
+                i++;
             }
             session.close();
 
