@@ -30,5 +30,7 @@ public class BaseTest {
             Configuration.browser = "Chrome";
         }
     }
+
+
 }
 

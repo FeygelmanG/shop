@@ -4,7 +4,6 @@ import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
-import com.codeborne.selenide.conditions.Visible;
 import com.example.shop.models.ShopPojo;
 import com.github.javafaker.Faker;
 import io.restassured.RestAssured;
@@ -17,6 +16,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import java.util.Objects;
 
 import static com.codeborne.selenide.Selenide.*;
@@ -66,6 +66,7 @@ public class ShopWebTests extends BaseTest {
             itemsSearch.shouldBe(CollectionCondition.sizeGreaterThan(0));
         });
     }
+
     @Test
     @DisplayName("WebTests.Навигация по странице в хэдере сайта")
     public void shouldNavigation() {
@@ -119,6 +120,7 @@ public class ShopWebTests extends BaseTest {
             itemsSearch.shouldBe(CollectionCondition.sizeGreaterThan(0));
         });
     }
+
     @Test
     @DisplayName("WebTests.Негативная проверка добавления тестового магазина с именем, начинающимся " +
             "с маленькой буквы")
@@ -136,7 +138,7 @@ public class ShopWebTests extends BaseTest {
     @Test
     @DisplayName("WebTests.Негативная проверка добавления тестового магазина с именем из 6 символов")
     public void shouldNotAddNameShopWith6Letters() {
-        String shopName = faker.funnyName().name().substring(1,6);
+        String shopName = faker.funnyName().name().substring(1, 6);
 
         step("Ввести название нового магазина с именем из 6 символов для 'Create a shop' и нажать кнопку 'Create shop'", () -> inputNewShop(shopName));
 
@@ -145,12 +147,14 @@ public class ShopWebTests extends BaseTest {
             itemsSearch.shouldBe(CollectionCondition.size(1));
         });
     }
+
     public void inputNewShop(String textId) {
         SelenideElement createField = $x("//input[@id=\"name\"]");
         createField.sendKeys(textId);
         SelenideElement magnifier = $x("//button[@onclick=\"addShop()\"]");
         magnifier.click();
     }
+
     @Test
     @DisplayName("WebTests.Удаление последнего из добавленных магазинов по Id")
     public void shouldDeleteShops() {

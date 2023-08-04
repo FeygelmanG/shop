@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+
 import java.util.Objects;
 
 import static com.example.shop.Configuration.buildFactory;
@@ -91,7 +92,7 @@ public class ShopControllerTests {
     public void shouldNot6LettersShop() {
         String shopName = faker.funnyName().name();
         JSONObject object = new JSONObject();
-        object.put("shopName", shopName.substring(1,5));
+        object.put("shopName", shopName.substring(1, 5));
         object.put("shopPublic", faker.random().nextBoolean());
 
         requestSpec.body(object.toString());
@@ -127,23 +128,9 @@ public class ShopControllerTests {
                     .statusCode(200);
         });
         step("Получить магазин по полученному id тестового магазина", () -> {
-            SessionFactory factory = buildFactory();
-            Session session = createNewSession(Objects.requireNonNull(factory));
-            Long shopId = 0L;
-            var shopsList = session.createNativeQuery("SELECT * FROM shops ORDER BY shop_id DESC", ShopPojo.class).list();
-            Assertions.assertTrue(shopsList.size() > 0);
-            int i = 0;
-            String shopNameSelect = "";
-            while ((i <=  shopsList.size()-1) & (!shopNameSelect.equals(shopName))) {
-                ShopPojo testShop = shopsList.get(i);
-                shopNameSelect = testShop.getShopName();
-                shopId = testShop.getShopId();
-                i++;
-            }
-            session.close();
 
             requestSpec
-                    .get("/shops/{shopId}", shopId)
+                    .get("/shops/{shopId}", getIdShop(shopName))
                     .then()
                     .spec(responseShopDto)
                     .body("shopName", equalTo(shopName), "shopPublic", equalTo(shopPublic));
@@ -169,25 +156,30 @@ public class ShopControllerTests {
         });
 
         step("Удалить магазин по полученному id тестового магазина", () -> {
-            SessionFactory factory = buildFactory();
-            Session session = createNewSession(Objects.requireNonNull(factory));
-            Long shopId = 0L;
-            var shopsList = session.createNativeQuery("SELECT * FROM shops ORDER BY shop_id DESC", ShopPojo.class).list();
-            Assertions.assertTrue(shopsList.size() > 0);
-            int i = shopsList.size() - 1;
-            String shopNameSelect = "";
-            while ((i >= 0) & (!shopNameSelect.equals(shopName))) {
-                ShopPojo testShop = shopsList.get(i);
-                shopNameSelect = testShop.getShopName();
-                shopId = testShop.getShopId();
-                i--;
-            }
-            session.close();
 
             requestSpec
-                    .delete("/shops/delete/{id}", shopId)
+                    .delete("/shops/delete/{id}", getIdShop(shopName))
                     .then()
                     .statusCode(204);
         });
     }
+
+    public Long getIdShop(String shopName) {
+        SessionFactory factory = buildFactory();
+        Session session = createNewSession(Objects.requireNonNull(factory));
+        Long shopId = 0L;
+        var shopsList = session.createNativeQuery("SELECT * FROM shops ORDER BY shop_id DESC", ShopPojo.class).list();
+        Assertions.assertTrue(shopsList.size() > 0);
+        int i = shopsList.size() - 1;
+        String shopNameSelect = "";
+        while ((i >= 0) & (!shopNameSelect.equals(shopName))) {
+            ShopPojo testShop = shopsList.get(i);
+            shopNameSelect = testShop.getShopName();
+            shopId = testShop.getShopId();
+            i--;
+        }
+        session.close();
+        return shopId;
+    }
+
 }
