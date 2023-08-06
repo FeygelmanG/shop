@@ -113,7 +113,8 @@ public class ShopWebTests extends BaseTest {
     public void shouldAddShops() {
         String shopName = faker.funnyName().name();
 
-        step("Ввести " + shopName + " в поле 'Name' для 'Create a shop' и нажать кнопку 'Create shop'", () -> inputNewShop(shopName));
+        step("Ввести " + shopName + " в поле 'Name' для 'Create a shop' и нажать кнопку 'Create shop'",
+                () -> inputNewShop(shopName));
 
         step("Проверить, что в списке магазинов отображается магазин с name " + shopName, () -> {
             ElementsCollection itemsSearch = $$x("//td[contains(text(),'" + shopName + "')]");
@@ -127,10 +128,12 @@ public class ShopWebTests extends BaseTest {
     public void shouldNotAddNameShopWithLowFirstLetter() {
         String shopName = faker.funnyName().name().toLowerCase();
 
-        step("Ввести название нового магазина с маленькой буквы для 'Create a shop' и нажать кнопку 'Create shop'", () -> inputNewShop(shopName));
+        step("Ввести название нового магазина с маленькой буквы для 'Create a shop' и нажать кнопку 'Create shop'"
+                , () -> inputNewShop(shopName));
 
         step("Проверить, появляется ошибка", () -> {
-            ElementsCollection itemsSearch = $$x("//div[@id='name_validation'][contains(@style,'visibility: visible;')]");
+            ElementsCollection itemsSearch = $$x("//div[@id='name_validation']" +
+                    "[contains(@style,'visibility: visible;')]");
             itemsSearch.shouldBe(CollectionCondition.size(1));
         });
     }
@@ -140,10 +143,12 @@ public class ShopWebTests extends BaseTest {
     public void shouldNotAddNameShopWith6Letters() {
         String shopName = faker.funnyName().name().substring(1, 6);
 
-        step("Ввести название нового магазина с именем из 6 символов для 'Create a shop' и нажать кнопку 'Create shop'", () -> inputNewShop(shopName));
+        step("Ввести название нового магазина с именем из 6 символов для 'Create a shop' и нажать кнопку " +
+                "'Create shop'", () -> inputNewShop(shopName));
 
         step("Проверить, появляется ошибка", () -> {
-            ElementsCollection itemsSearch = $$x("//div[@id='name_validation'][contains(@style,'visibility: visible;')]");
+            ElementsCollection itemsSearch = $$x("//div[@id='name_validation']" +
+                    "[contains(@style,'visibility: visible;')]");
             itemsSearch.shouldBe(CollectionCondition.size(1));
         });
     }
@@ -162,13 +167,15 @@ public class ShopWebTests extends BaseTest {
         SessionFactory factory = buildFactory();
         Session session = createNewSession(Objects.requireNonNull(factory));
         String shopId;
-        var shopsList = session.createNativeQuery("SELECT * FROM shops ORDER BY shop_id DESC", ShopPojo.class).list();
+        var shopsList = session.createNativeQuery("SELECT * FROM shops ORDER BY shop_id DESC",
+                ShopPojo.class).list();
         Assertions.assertTrue(shopsList.size() > 0);
         ShopPojo testShop = shopsList.get(0);
         shopId = testShop.getShopId().toString();
         session.close();
 
-        step("Ввести " + shopId + " в поле Id для 'Delete a shop' и нажать кнопку 'Delete shop'", () -> inputDeleteId(shopId));
+        step("Ввести " + shopId + " в поле Id для 'Delete a shop' и нажать кнопку 'Delete shop'",
+                () -> inputDeleteId(shopId));
 
         step("Проверить, что в списке магазинов не отображается магазин с id " + shopId, () -> {
             ElementsCollection itemsSearch = $$x("//td[contains(text(),'" + shopId + "')]");
@@ -182,10 +189,12 @@ public class ShopWebTests extends BaseTest {
 
         String shopId = "";
 
-        step("Оставить пустое значение в поле Id для 'Delete a shop' и нажать кнопку 'Delete shop'", () -> inputDeleteId(shopId));
+        step("Оставить пустое значение в поле Id для 'Delete a shop' и нажать кнопку 'Delete shop'",
+                () -> inputDeleteId(shopId));
 
         step("Проверить, появляется ошибка", () -> {
-            ElementsCollection itemsSearch = $$x("//div[@id='id_validation'][contains(@style,'visibility: visible;')]");
+            ElementsCollection itemsSearch = $$x("//div[@id='id_validation']" +
+                    "[contains(@style,'visibility: visible;')]");
             itemsSearch.shouldBe(CollectionCondition.size(1));
         });
     }

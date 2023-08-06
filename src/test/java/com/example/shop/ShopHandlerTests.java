@@ -12,15 +12,15 @@ import static com.example.shop.ShopHandler.checkLength;
 public class ShopHandlerTests {
     @ParameterizedTest
     @ValueSource(strings = {"Sporttovari", "InnopolisMarket", "ArskiiMed"})
-    @DisplayName("UnitTests.Положительная проверка, что имя магазина может содержать любые символы, но обязано начинаться с " +
-            "большой буквы")
+    @DisplayName("UnitTests.Положительная проверка, что имя магазина может содержать любые символы, но обязано " +
+            "начинаться с большой буквы")
     public void shouldBigFirstLetter(String nameShop) {
 
         Assertions.assertTrue(checkFirstLetter(nameShop));
     }
 
-    @DisplayName("UnitTests.Негативная проверка, что имя магазина может содержать любые символы, но обязано начинаться с " +
-            "большой буквы")
+    @DisplayName("UnitTests.Негативная проверка, что имя магазина может содержать любые символы,но обязано начинаться" +
+            " с большой буквы")
     @ParameterizedTest
     @ValueSource(strings = {"sporttovari", "innopolisMarket", "arskiiMed"})
     public void shouldNotBigFirstLetter(String nameShop) {

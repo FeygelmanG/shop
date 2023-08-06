@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Response pattern",
+  "type": "object",
+  "properties": {
+    "shopId": {
+      "type": "number"
+    },
+    "shopName": {
+      "type": "string"
+    },
+    "shopPublic": {
+      "type": "boolean"
+    }
+  }
+}

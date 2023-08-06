@@ -1,57 +1,28 @@
 package com.example.shop;
 
+import com.example.shop.controllers.ShopController;
+import com.example.shop.models.ShopDto;
 import com.example.shop.models.ShopPojo;
 import com.github.javafaker.Faker;
-import io.restassured.RestAssured;
-import io.restassured.builder.ResponseSpecBuilder;
-import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
-import io.restassured.specification.ResponseSpecification;
-import org.json.JSONObject;
 import org.junit.jupiter.api.*;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
 import java.util.Objects;
 
-import static com.example.shop.Configuration.buildFactory;
-import static com.example.shop.Configuration.createNewSession;
 import static io.qameta.allure.Allure.step;
-import static org.hamcrest.Matchers.equalTo;
 
 
 public class ShopControllerTests {
     private static final Faker faker = new Faker();
-    static RequestSpecification requestSpec;
-    ResponseSpecification responseShopDto;
 
-    @BeforeAll
-    public static void setup() {
-        RestAssured.baseURI = "http://localhost:4000";
-    }
-
-    @BeforeEach
-    public void setClient() {
-
-        requestSpec = RestAssured.given();
-        ResponseSpecBuilder specBuilder = new ResponseSpecBuilder()
-                .expectStatusCode(200);
-        responseShopDto = specBuilder.build();
-    }
+    ShopController shopController = new ShopController();
 
     @Test
     @DisplayName("ControllerTests.Добавление тестового магазина")
     public void shouldAddShop() {
         String shopName = faker.funnyName().name();
-        JSONObject object = new JSONObject();
-        object.put("shopName", shopName);
-        object.put("shopPublic", faker.random().nextBoolean());
+        ShopDto shopDto = new ShopDto(0L, shopName, faker.random().nextBoolean());
+        Assertions.assertEquals(200, shopController.addShop(shopDto).getStatusCode().value());
 
-        requestSpec.body(object.toString());
-        requestSpec.header("content-type", "application/json");
-        Response response = requestSpec.post("/shops/add");
-        response.then()
-                .statusCode(200);
     }
 
     @Test
@@ -59,15 +30,9 @@ public class ShopControllerTests {
     public void shouldNotAddShopWithExtraLongName() {
         String shopName = "s".repeat(256) +
                 faker.funnyName().name();
-        JSONObject object = new JSONObject();
-        object.put("shopName", shopName);
-        object.put("shopPublic", faker.random().nextBoolean());
-
-        requestSpec.body(object.toString());
-        requestSpec.header("content-type", "application/json");
-        Response response = requestSpec.post("/shops/add");
-        response.then()
-                .statusCode(400);
+        ShopDto shopDto = new ShopDto(0L, shopName, faker.random().nextBoolean());
+        var responseAddShop = shopController.addShop(shopDto);
+        Assertions.assertEquals(400, responseAddShop.getStatusCode().value());
     }
 
     @Test
@@ -75,39 +40,28 @@ public class ShopControllerTests {
             "с маленькой буквы")
     public void shouldNotBigFirstLetterNameShop() {
         String shopName = faker.funnyName().name().toLowerCase();
-        JSONObject object = new JSONObject();
-        object.put("shopName", shopName);
-        object.put("shopPublic", faker.random().nextBoolean());
+        ShopDto shopDto = new ShopDto(0L, shopName, faker.random().nextBoolean());
 
-        requestSpec.body(object.toString());
-        requestSpec.header("content-type", "application/json");
-        Response response = requestSpec.post("/shops/add");
-        response.then()
-                .statusCode(400)
-                .body(equalTo("Name should begin with a capital letter"));
+        var responseAddShop = shopController.addShop(shopDto);
+        Assertions.assertEquals(400, responseAddShop.getStatusCode().value());
+        Assertions.assertEquals("Name should begin with a capital letter", responseAddShop.getBody());
     }
 
     @Test
     @DisplayName("ControllerTests.Негативная проверка добавления тестового магазина с именем < 6 символов")
     public void shouldNot6LettersShop() {
-        String shopName = faker.funnyName().name();
-        JSONObject object = new JSONObject();
-        object.put("shopName", shopName.substring(1, 5));
-        object.put("shopPublic", faker.random().nextBoolean());
+        String shopName = faker.funnyName().name().substring(1, 5);
+        ShopDto shopDto = new ShopDto(0L, shopName, faker.random().nextBoolean());
 
-        requestSpec.body(object.toString());
-        requestSpec.header("content-type", "application/json");
-        Response response = requestSpec.post("/shops/add");
-        response.then()
-                .statusCode(400)
-                .body(equalTo("Name should be more than 6 letters"));
+        var responseAddShop = shopController.addShop(shopDto);
+        Assertions.assertEquals(400, responseAddShop.getStatusCode().value());
+        Assertions.assertEquals("Name should be more than 6 letters", responseAddShop.getBody());
     }
 
     @Test
     @DisplayName("ControllerTests.Получение всех магазинов")
     public void shouldGetAllShop() {
-        Response response = requestSpec.get("/shops/all");
-        response.then().statusCode(200);
+        Assertions.assertEquals(200, shopController.getShops().getStatusCode().value());
     }
 
     @Test
@@ -117,23 +71,15 @@ public class ShopControllerTests {
         Boolean shopPublic = faker.random().nextBoolean();
 
         step("Создать тестовый магазин", () -> {
-            JSONObject object = new JSONObject();
-            object.put("shopName", shopName);
-            object.put("shopPublic", shopPublic);
-
-            requestSpec.body(object.toString());
-            requestSpec.header("content-type", "application/json");
-            Response response = requestSpec.post("/shops/add");
-            response.then()
-                    .statusCode(200);
+            ShopDto shopDto = new ShopDto(0L, shopName, shopPublic);
+            Assertions.assertEquals(200, shopController.addShop(shopDto).getStatusCode().value());
         });
         step("Получить магазин по полученному id тестового магазина", () -> {
+            var responseAddShop = shopController.getShop(getIdShop(shopName));
+            Assertions.assertEquals(200, responseAddShop.getStatusCode().value());
+            Assertions.assertEquals(Objects.requireNonNull(responseAddShop.getBody()).getShopName(), shopName);
+            Assertions.assertEquals(responseAddShop.getBody().getShopPublic(), shopPublic);
 
-            requestSpec
-                    .get("/shops/{shopId}", getIdShop(shopName))
-                    .then()
-                    .spec(responseShopDto)
-                    .body("shopName", equalTo(shopName), "shopPublic", equalTo(shopPublic));
         });
     }
 
@@ -142,33 +88,19 @@ public class ShopControllerTests {
     public void shouldDeleteShop() {
         String shopName = faker.funnyName().name();
 
-
         step("Создать тестовый магазин", () -> {
-            JSONObject object = new JSONObject();
-            object.put("shopName", shopName);
-            object.put("shopPublic", faker.random().nextBoolean());
-
-            requestSpec.body(object.toString());
-            requestSpec.header("content-type", "application/json");
-            Response response = requestSpec.post("/shops/add");
-            response.then()
-                    .statusCode(200);
+            ShopDto shopDto = new ShopDto(0L, shopName, faker.random().nextBoolean());
+            Assertions.assertEquals(200, shopController.addShop(shopDto).getStatusCode().value());
         });
 
-        step("Удалить магазин по полученному id тестового магазина", () -> {
-
-            requestSpec
-                    .delete("/shops/delete/{id}", getIdShop(shopName))
-                    .then()
-                    .statusCode(204);
-        });
+        step("Удалить магазин по полученному id тестового магазина", () -> Assertions.assertEquals(204,
+                shopController.deleteShop(getIdShop(shopName)).getStatusCode().value()));
     }
 
     public Long getIdShop(String shopName) {
-        SessionFactory factory = buildFactory();
-        Session session = createNewSession(Objects.requireNonNull(factory));
+        var shopsList = shopController.getShops().getBody();
         Long shopId = 0L;
-        var shopsList = session.createNativeQuery("SELECT * FROM shops ORDER BY shop_id DESC", ShopPojo.class).list();
+        assert shopsList != null;
         Assertions.assertTrue(shopsList.size() > 0);
         int i = shopsList.size() - 1;
         String shopNameSelect = "";
@@ -178,8 +110,6 @@ public class ShopControllerTests {
             shopId = testShop.getShopId();
             i--;
         }
-        session.close();
         return shopId;
     }
-
 }
